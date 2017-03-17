@@ -59,8 +59,8 @@ phb:
 	.long _begin_elf	// paddr
 	.long sizeoffile	// filesz
 	.long sizeoffile	// memsz
-	.Long PT_R | PT_X	// Flags
-	.Long 0x00001000	// Align
+	.long PT_R | PT_X	// flags
+	.long 0x00001000	// align
 	
 	.equ phentsize, .-phb
 	
