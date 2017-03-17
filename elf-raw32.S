@@ -19,27 +19,32 @@
 #define shentsize 0x28
 
 #define PT_LOAD 0x1
+#define PT_R 0x1
+#define PT_W 0x2
+#define PT_X 0x4
 
-	.equ sizeoffile, _end_elf-_end_elf
+
+	.equ sizeoffile, _end_elf-_begin_elf
 
 	.section .text
-_begin_elf:	
+_begin_elf:
+	
 	// elf header
 ehb:	
 	.byte ELFMAG0, ELFMAG1, ELFMAG2, ELFMAG3, ELFCLASS32, ELFDATA2LSB, EV_CURRENT, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-	.word  ET_EXEC, EM_386
+	.word ET_EXEC, EM_386
 	.long EV_CURRENT
 	.long entry		// entry
 	.long phoff		// phoff
-	.long 0 			// shoff
+	.long 0 		// shoff
 	.long 0			// flags
 	.word ehsize		// ehsize
 	.word phentsize		// phentsize
 	.word phnum		// phnum
 	.word shentsize		// shentsize
 	.word 0			// shnum
-	.word 0
+	.word 0			// shstrndx
 
 	.equ ehsize, .-ehb
 
@@ -50,17 +55,20 @@ phb:
 
 	.long PT_LOAD		// type
 	.long 0			// offset
-	.long ehb
-	.long ehb
-	.long sizeoffile	//
-	.long sizeoffile
-	.long 0x05		// flags
-	.long 0x00001000	// align
+	.long _begin_elf	// vaddr
+	.long _begin_elf	// paddr
+	.long sizeoffile	// filesz
+	.long sizeoffile	// memsz
+	.Long PT_R | PT_X	// Flags
+	.Long 0x00001000	// Align
 	
 	.equ phentsize, .-phb
+	
 
-
-entry:	
+	// Code section
+	
+entry:
+	// exit(42)
 	xorl %eax, %eax
 	incl %eax
 	movl $42, %ebx

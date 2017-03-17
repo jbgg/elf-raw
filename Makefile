@@ -21,6 +21,9 @@ elf-raw32 : elf-raw32.ld elf-raw32.o
 	$(LD) $(LF) -T $^ -o $@
 
 
+
+
+
 clean :
 	rm elf-raw32 elf-raw32.o
 
